@@ -225,12 +225,17 @@ def main():
 		threads = []
 
 		# Load (M)DNS, NBNS and LLMNR Poisoners
-		from poisoners.LLMNR import LLMNR
-		from poisoners.NBTNS import NBTNS
-		from poisoners.MDNS import MDNS
-		threads.append(Thread(target=serve_LLMNR_poisoner, args=('', 5355, LLMNR,)))
-		threads.append(Thread(target=serve_MDNS_poisoner,  args=('', 5353, MDNS,)))
-		threads.append(Thread(target=serve_NBTNS_poisoner, args=('', 137,  NBTNS,)))
+
+                if settings.Config.poison_llmnr:
+			from poisoners.LLMNR import LLMNR
+                        threads.append(Thread(target=serve_LLMNR_poisoner, args=('', 5355, LLMNR,)))
+                if settings.Config.poison_dns:
+                        from poisoners.MDNS import MDNS
+                        threads.append(Thread(target=serve_MDNS_poisoner,  args=('', 5353, MDNS,)))
+                if settings.Config.poison_nbt:
+                        from poisoners.NBTNS import NBTNS
+                        threads.append(Thread(target=serve_NBTNS_poisoner, args=('', 137,  NBTNS,)))
+
 
 		# Load Browser Listener
 		from servers.Browser import Browser
